@@ -7,8 +7,8 @@ with a locally installed Mysql database.
 It is intended to be used with my Capistrano deployment template for wordpress
 applications.
 
-This module depends on [[http://github.com/dcsobral/puppet-apache|puppet-apache]]
-and [[https://github.com/camptocamp/puppet-mysql|puppet-mysql]] modules, plus a
+This module depends on [puppet-apache](http://github.com/dcsobral/puppet-apache)
+and [puppet-mysql](https://github.com/camptocamp/puppet-mysql) modules, plus a
 class named "git" that installs git (this just gets around multiple dependencies
 on the package "git" in my environment).
 
