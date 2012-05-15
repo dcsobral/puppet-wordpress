@@ -1,0 +1,35 @@
+#nginx configuration
+server {
+   listen       80;
+   server_name <%= site %>;
+
+   # ignore favicon.ico
+   rewrite ^/(.*)/favicon.ico$ /favicon.ico last;
+   location = /favicon.ico {
+     return 404;
+     access_log     off;
+     log_not_found  off;
+   }
+
+   # uploads
+   location ~ ^/wp-content/uploads/\d+/ {
+      rewrite ^/wp-content(/uploads/.*) $1 last;
+   }
+   location ^~ /uploads/ {
+      root /home/<%= app %>/shared;
+      #access_log off;
+   }
+
+   # static files
+   location ~* \.(swf|ico|css|js|gif|jpe?g|png|txt|htm|html|woff)(\?.+)?$ {
+      root /home/<%= app %>/current/wordpress;
+      #access_log off;
+   }
+
+   # pass all else onto apache waiting at localhost:8080
+   location / {
+      proxy_pass http://localhost:8080;
+      proxy_set_header Host $host;
+      access_log off;
+   }
+}

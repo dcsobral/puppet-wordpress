@@ -1,0 +1,37 @@
+<VirtualHost *:<%= port %>>
+    ServerName <%= site %>
+    ServerAdmin webmaster@<%= sitedomain %>
+
+    # Don't bother looking for favicon.ico
+    Redirect 404 /favicon.ico
+
+    # Don't bother sending the custom error page for favicon.ico
+    <Location /favicon.ico>
+        ErrorDocument 404 "No favicon"
+    </Location>
+
+    Alias /uploads /home/<%= app %>/shared/uploads
+    AliasMatch /wp-content/uploads/([0-9]+)/ /home/<%= app %>/shared/updloads/$1/
+
+    DocumentRoot /home/<%= app %>/current/wordpress
+    <Directory /home/<%= app %>/current/wordpress/>
+		Options Indexes FollowSymLinks MultiViews
+		AllowOverride All
+		Order allow,deny
+		allow from all
+	</Directory>
+    <Directory /home/<%= app %>/shared/uploads/>
+		Options Indexes FollowSymLinks
+		AllowOverride None
+		Order allow,deny
+		allow from all
+	</Directory>
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel warn
+
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>

@@ -1,0 +1,55 @@
+# wordpress puppet module #
+
+Configures a server for Wordpress deployment through Capistrano on Debian,
+with either an Apache2/Nginx mixed environment or a pure Apache2 environment,
+with a locally installed Mysql database.
+
+It is intended to be used with my Capistrano deployment template for wordpress
+applications.
+
+This module depends on [[http://github.com/dcsobral/puppet-apache|puppet-apache]]
+and [[https://github.com/camptocamp/puppet-mysql|puppet-mysql]] modules, plus a
+class named "git" that installs git (this just gets around multiple dependencies
+on the package "git" in my environment).
+
+## Classes ##
+
+* wordpress
+
+## Definitions ##
+
+* wordpress::app
+
+### wordpress ###
+
+Installs the package wordpress, plus Apache, PHP and necessary modules
+(uses module puppet-apache). I don't actually recommend using the wordpress
+package, but it brings all necessary dependencies.
+
+### wordpress::app ###
+
+Creates infrastructure required to deploy wordpress through Capistrano. It
+creates an user for the application with group www-data, creates the shared
+directory required for Capistrano (one should deploy to /home/app-name),
+wp-config.php, plus Apache configuration pointing to the site (on the
+"current" link), and, by default, an nginx configuration as well to handle
+static content.
+
+It generates both pure apache and nginx+apache configurations, depending on
+the parameters. Also, it can either point to the fqdn of the server, which is
+well suited to test servers, or to a fqdn provided as parameter.
+
+Through the puppet-mysql module it installs mysql and configures the database
+and user to be used by puppet, plus access to a "wip" database that I use on
+my capistrano deployment script to do database merge.
+
+Remote mysql database is not presently supported, but it should be trivial to
+add simply removing the mysql part and segregating it on a different define.
+
+The parameters are:
+
+* password: database password to be used -- do not use '#' on it
+* site: defaults to fqdn, fills in SITE_URL on php-config.
+* nginx: defaults to true, selects apache/nginx mixed environment vs apache-only environment.
+* sitedomain: defaults to domain, used to fill the serveradministrator parameter on Apache.
+
